@@ -3,10 +3,12 @@ from django.contrib.auth.models import User, auth
 from . import urls
 from django.contrib import messages
 from .models import Profile
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 
+@login_required(login_url='core:login_form')
 def index(request):
     return render(request, 'index.html')
 
@@ -48,3 +50,33 @@ def signup(request):
 
     else:
         return render(request, 'signup.html')
+
+
+def login(request):
+    if request.method == 'POST':
+        # do something
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=username, password=password)
+
+        # if user exists
+        if user is not None:
+            auth.login(request, user)
+            print('User logged in')
+            return redirect('core:profile')
+        else:
+            print('Invalid credentials')
+            messages.info(request, 'Invalid credentials, please try again.')
+            return redirect('core:login_form')
+
+    else:
+        return render(request, 'signin.html')
+
+
+@login_required(login_url='core:login_form')
+def logout(request):
+    auth.logout(request)
+    print('User logged out')
+    messages.info(request, "You've, been logged out.")
+    return redirect('core:index')
