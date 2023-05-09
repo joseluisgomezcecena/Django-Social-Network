@@ -34,6 +34,8 @@ def signup(request):
                 user.save()
 
                 # log user in and redirect to settings page.
+                user_login = auth.authenticate(username=username, password=password)
+                auth.login(request, user_login)
 
                 # create a profile object for the user.
                 user_model = User.objects.get(username=username)
@@ -42,7 +44,7 @@ def signup(request):
 
                 print('User created')
                 messages.info(request, 'Your Account was created successfully, you can now login.')
-                return redirect('core:signup_form')
+                return redirect('core:settings')
 
         else:
             messages.info(request, 'Passwords don\'t match, please try again.')
@@ -50,6 +52,11 @@ def signup(request):
 
     else:
         return render(request, 'signup.html')
+
+
+@login_required(login_url='core:login_form')
+def settings(request):
+    return render(request, 'setting.html')
 
 
 def login(request):
