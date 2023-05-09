@@ -56,7 +56,23 @@ def signup(request):
 
 @login_required(login_url='core:login_form')
 def settings(request):
-    return render(request, 'setting.html')
+    user_profile = Profile.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        if request.FILES.get('image') is None:
+            image = user_profile.image
+        else:
+            image = request.FILES['image']
+
+        bio = request.POST['bio']
+        location = request.POST['location']
+
+        user_profile.image = image
+        user_profile.bio = bio
+        user_profile.location = location
+        user_profile.save()
+
+    return render(request, 'setting.html', {'user_profile': user_profile})
 
 
 def login(request):
