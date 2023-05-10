@@ -12,7 +12,8 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     user_object = User.objects.get(username=request.user.username)
     user_profile = Profile.objects.get(user=user_object)
-    return render(request, 'index.html', {'user_profile': user_profile})
+    posts = Post.objects.all().order_by('-created_at')
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts': posts})
 
 
 def signup(request):
