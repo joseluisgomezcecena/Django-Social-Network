@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from . import urls
 from django.contrib import messages
-from .models import Profile
+from .models import Profile, Post
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -10,7 +10,9 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='core:login_form')
 def index(request):
-    return render(request, 'index.html')
+    user_object = User.objects.get(username=request.user.username)
+    user_profile = Profile.objects.get(user=user_object)
+    return render(request, 'index.html', {'user_profile': user_profile})
 
 
 def signup(request):
@@ -103,3 +105,22 @@ def logout(request):
     print('User logged out')
     messages.info(request, "You've, been logged out.")
     return redirect('core:index')
+
+
+@login_required(login_url='core:login_form')
+def new_post(request):
+    if request.method == 'POST':
+        # do something
+        content = request.POST['caption']
+        image = request.FILES['image_upload']
+        user = request.user.username
+
+        post = Post.objects.create(user=user, content=content, image=image)
+        post.save()
+
+        print('New post created')
+        messages.info(request, 'Your post was created successfully.')
+        return redirect('core:index')
+
+    else:
+        return render(request, 'index.html')

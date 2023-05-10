@@ -64,19 +64,28 @@
                             <div class="flex justify-center flex-center text-center">
     
                                 <div class="flex flex-col choose-upload text-center">
-                                   
+
+                                    <!--
                                     <div class="bg-gray-100 border-2 border-dashed flex flex-col h-24 items-center justify-center relative w-full rounded-lg  ">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-12">
                                             <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
                                             <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
                                         </svg>
                                     </div>
-
-                                    <p class="my-3 leading-6"> Upload pics or videos <br> please upload her ..
+                                    -->
+                                    <p class="my-3 leading-6"> Upload pics or videos <br> please upload here ..
                                     </p>
-                                    <div uk-form-custom>
-                                        <input type="file">
-                                        <a href="#" class="button soft-warning small"> Choose file</a>
+                                    <div>
+                                        <form action="new_post" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                            <input type="file" name="image_upload">
+                                            <!--
+                                            <a href="#" class="button soft-warning small"> Choose file</a>
+                                            -->
+                                            <textarea name="caption" id="caption" cols="30" rows="10"></textarea>
+                                            <br>
+                                            <button type="submit" class="button soft-success small"> Upload</button>
+                                        </form>
                                     </div>
     
                                     <a href="#" class="uk-text-muted mt-3 uk-link"
@@ -167,7 +176,7 @@
                         <!-- profile -->
 
                         <a href="#">
-                            <img src="{% static 'assets/images/avatars/avatar-2.jpg' %}" class="header-avatar" alt="">
+                            <img src="{{ user_profile.image.url }}" class="header-avatar" alt="">
                         </a>
                         <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                             <ul>
