@@ -159,3 +159,20 @@ def new_post(request):
 
     else:
         return render(request, 'index.html')
+
+
+@login_required(login_url='core:login_form')
+def profile(request, pk):
+    user_object = User.objects.get(username=pk)
+    user_profile = Profile.objects.get(user=user_object)
+    posts = Post.objects.filter(user=pk).order_by('-created_at')
+    post_number = len(posts)
+
+    context = {
+        'user_object': user_object,
+        'user_profile': user_profile,
+        'posts': posts,
+        'post_number': post_number
+    }
+
+    return render(request, 'profile.html', context)
