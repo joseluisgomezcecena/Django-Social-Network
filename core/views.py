@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from . import urls
 from django.contrib import messages
-from .models import Profile, Post
+from .models import Profile, Post, LikePost
 from django.contrib.auth.decorators import login_required
+import uuid
 
 # Create your views here.
 
@@ -14,6 +15,39 @@ def index(request):
     user_profile = Profile.objects.get(user=user_object)
     posts = Post.objects.all().order_by('-created_at')
     return render(request, 'index.html', {'user_profile': user_profile, 'posts': posts})
+
+
+@login_required(login_url='core:login_form')
+def like_post(request):
+
+    username = request.user.username
+    post_id = request.GET.get('post_id')
+
+    post = Post.objects.get(id=post_id)
+    # post = Post.objects.filter(id=post_id).first()
+
+    like_filter = LikePost.objects.filter(post_id=post_id, user_name=username).first()
+
+    if like_filter is None:
+        new_like = LikePost.objects.create(post_id=post_id, user_name=username)
+        new_like.save()
+
+        post.no_of_likes += 1
+        post.save()
+        print('Like added.')
+        messages.info(request, 'You liked a post!')
+        # return redirect('core:index')
+    else:
+        like_filter.delete()
+
+        post.no_of_likes -= 1
+        post.save()
+
+        print('Like removed.')
+        messages.info(request, 'You unliked a post!')
+        # return redirect('core:index')
+
+    return redirect('core:index')
 
 
 def signup(request):
