@@ -1,5 +1,5 @@
 *.pl linguist-detectable=true
 *.js linguist-detectable=false
 *.html linguist-detectable=false
-*.htm inguist-detectable=false
-*.css inguist-detectable=false
+*.htm linguist-detectable=false
+*.css linguist-detectable=false
