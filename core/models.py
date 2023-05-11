@@ -38,3 +38,12 @@ class LikePost(models.Model):
 
     def __str__(self):
         return self.user_name
+
+
+class FollowersCount(models.Model):
+    follower = models.CharField(max_length=100)
+    user = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user
